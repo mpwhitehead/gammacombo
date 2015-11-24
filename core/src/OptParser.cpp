@@ -86,6 +86,7 @@ OptParser::OptParser():
 	smooth2d = false;
 	usage = false;
 	verbose = false;
+	indata = "";
 }
 
 ///
@@ -162,6 +163,7 @@ void OptParser::defineOptions()
 	availableOptions.push_back("ndiv");
 	availableOptions.push_back("ndivy");
 	availableOptions.push_back("printcor");
+	availableOptions.push_back("indata");
 }
 
 ///
@@ -193,6 +195,7 @@ void OptParser::bookPlottingOptions()
 	bookedOptions.push_back("plot2dcl");
 	bookedOptions.push_back("ndiv");
 	bookedOptions.push_back("ndivy");
+	bookedOptions.push_back("indata");
 	bookedOptions.push_back("title");
 	bookedOptions.push_back("unoff");
 }
@@ -303,6 +306,9 @@ void OptParser::parseArguments(int argc, char* argv[])
 	TCLAP::ValueArg<string> scanrangeyArg("", "scanrangey", "For 2D plots, restrict the scan range "
 			"of the y variable to a given range. "
 			"Format: --scanrangey min:max.", false, "default", "string");
+	TCLAP::ValueArg<string> indataArg("", "indata", "Path of the input datafile containing observable "
+			"values, uncertainties and correlations. "
+			"Format: --indata pathname.dat", false, "default", "string");
 	TCLAP::ValueArg<int> ndivArg("", "ndiv", "Set the number of axis divisions (x axis in 1d and 2d plots): "
 			"ndiv=N1 + 100*N2 + 10000*N3, "
 			"N1 = number of 1st divisions (N2 = 2nd, N3 = 3rd). Default is 407. To enable bin optimization, pre-pend "
@@ -563,6 +569,7 @@ void OptParser::parseArguments(int argc, char* argv[])
 	if ( isIn<TString>(bookedOptions, "nosyst" ) ) cmd.add( nosystArg );
 	if ( isIn<TString>(bookedOptions, "ndivy" ) ) cmd.add(ndivyArg);
 	if ( isIn<TString>(bookedOptions, "ndiv" ) ) cmd.add(ndivArg);
+	if ( isIn<TString>(bookedOptions, "indata" ) ) cmd.add(indataArg);
 	if ( isIn<TString>(bookedOptions, "nBBpoints" ) ) cmd.add(nBBpointsArg);
   if ( isIn<TString>(bookedOptions, "nbatchjobs" ) ) cmd.add(nbatchjobsArg);
 	if ( isIn<TString>(bookedOptions, "magnetic" ) ) cmd.add( plotmagneticArg );
@@ -617,6 +624,7 @@ void OptParser::parseArguments(int argc, char* argv[])
 	nBBpoints         = nBBpointsArg.getValue();
 	ndiv              = ndivArg.getValue();
 	ndivy             = ndivyArg.getValue();
+	indata            = indataArg.getValue();
 	nosyst            = nosystArg.getValue();
 	npoints1d         = npointsArg.getValue()==-1 ? 100 : npointsArg.getValue();
 	npoints2dx        = npoints2dxArg.getValue()==-1 ? (npointsArg.getValue()==-1 ? 50 : npointsArg.getValue()) : npoints2dxArg.getValue();

@@ -6,12 +6,15 @@
  **/
 
 #include "PDF_Abs.h"
+#include <fstream>
 
-	PDF_Abs::PDF_Abs(int nObs)
+	PDF_Abs::PDF_Abs(int nObs, TString filename)
 : covMatrix(nObs),
 	corMatrix(nObs),
 	corStatMatrix(nObs),
-	corSystMatrix(nObs)
+	corSystMatrix(nObs),
+	valuevec(0), statvec(0), systvec(0), statcorrvec(0), systcorrvec(0),
+	datafile(filename)
 {
 	this->nObs = nObs;
 	parameters = 0;
@@ -83,6 +86,46 @@ PDF_Abs::~PDF_Abs()
 void PDF_Abs::initParameters(){assert(0);};
 void PDF_Abs::initRelations(){assert(0);};
 void PDF_Abs::initObservables(){assert(0);};
+
+void PDF_Abs::readDataFile()
+{
+	std::ifstream inputdata(datafile);
+	if (datafile==""){return;}
+	else if (!inputdata){
+		std::cout << "PDF_Abs::readDataFile : Input datafile '"<<datafile<<"' not found" << std::endl;
+	}
+	else{
+		std::string line;
+		Int_t nlines = (nObs*2)+3; // nObs*2 account for both correlation matrices and then value, stat err and syst err as extras
+
+		for ( Int_t i(1); i< nlines+1; ++i) {
+			std::getline(inputdata, line);
+			std::istringstream readout(line);
+			Double_t tmparray[nObs];
+
+			for ( Int_t j(0); j<nObs; ++j){
+				readout >> tmparray[j];
+				if (i==1){valuevec.push_back(tmparray[j]);}
+				else if (i==2){statvec.push_back(tmparray[j]);}
+				else if (i==3){systvec.push_back(tmparray[j]);}
+				else if (i<(nObs+4)){statcorrvec.push_back(tmparray[j]);}
+				else {systcorrvec.push_back(tmparray[j]);}
+			}
+		}
+		if (valuevec.size()!=nObs || statvec.size()!=nObs || systvec.size()!=nObs || statcorrvec.size()!=(nObs*nObs) || systcorrvec.size()!=(nObs*nObs)){
+			std::cout << "PDF_Abs::readDataFile : Vectors not of correct size, clearing them" << std::endl;
+			std::cout << "nObs " << nObs << " valuevec " << valuevec.size() << std::endl;
+			std::cout << "statvec " << statvec.size() << " systvec " << systvec.size() << std::endl;
+			std::cout << "statcorrvec " << statcorrvec.size() << " systcorrvec " << systcorrvec.size() << std::endl;
+			valuevec.clear();
+			statvec.clear();
+			systvec.clear();
+			statcorrvec.clear();
+			systcorrvec.clear();
+		}
+	}
+}
+
 void PDF_Abs::buildPdf(){assert(0);};
 void PDF_Abs::setObservables(TString c){assert(0);};
 void PDF_Abs::setUncertainties(TString c){assert(0);};

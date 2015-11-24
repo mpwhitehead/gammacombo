@@ -13,7 +13,7 @@
 SET( COMBINER_MODULES
 	tutorial
   #biggammacombo
-  #gammacombo
+  gammacombo
   #hfag
   #belle2
   #belle2_Vub

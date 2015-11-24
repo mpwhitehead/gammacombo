@@ -68,6 +68,7 @@ class OptParser
 		int             nBBpoints;
 		int             ndiv;
 		int             ndivy;
+		TString         indata;
 		bool            nosyst;
 		int		npoints1d;
 		int		npoints2dx;

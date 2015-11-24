@@ -50,7 +50,7 @@ using namespace Utils;
 class PDF_Abs
 {
 	public:
-		PDF_Abs(int nObs);
+		PDF_Abs(int nObs, TString filename="");
 		PDF_Abs(int nObs, ParametersAbs &pars);
 		virtual             ~PDF_Abs();
 		virtual void		build();
@@ -80,6 +80,7 @@ class PDF_Abs
 		virtual void        initParameters();
 		virtual void        initRelations();
 		virtual void        initObservables();
+		void		    readDataFile();	
 		void                loadExtParameters(RooFitResult *r);
 		void                print() const;
 		void                printParameters();
@@ -110,6 +111,12 @@ class PDF_Abs
 		vector<double> StatErr;
 		vector<double> SystErr;
 		TString corSource;
+		TString datafile;
+		std::vector<Double_t> valuevec;
+		std::vector<Double_t> statvec;
+		std::vector<Double_t> systvec;
+		std::vector<Double_t> statcorrvec;
+		std::vector<Double_t> systcorrvec;
 
 	protected:
 		TString obsValSource;
